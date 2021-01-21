@@ -46,6 +46,9 @@
                                     <constraint firstAttribute="width" constant="103" id="kIL-3T-dRa"/>
                                 </constraints>
                                 <state key="normal" title="Point"/>
+                                <connections>
+                                    <action selector="clickPointWithSender:" destination="BYZ-38-t0r" eventType="touchUpInside" id="iPh-Lx-sot"/>
+                                </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="経度" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Zyu-wB-UjM">
                                 <rect key="frame" x="20" y="142" width="60" height="60"/>
@@ -64,6 +67,9 @@
                                     <constraint firstAttribute="height" constant="61" id="zj7-tO-z4l"/>
                                 </constraints>
                                 <state key="normal" title="Set"/>
+                                <connections>
+                                    <action selector="clickSetWithSender:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Enh-sq-7yO"/>
+                                </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="緯度" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2Th-uU-6fo">
                                 <rect key="frame" x="20" y="84" width="60" height="60"/>
@@ -82,6 +88,9 @@
                                     <constraint firstAttribute="height" constant="61" id="Whq-hN-zgK"/>
                                 </constraints>
                                 <state key="normal" title="Stop"/>
+                                <connections>
+                                    <action selector="clickStopWithSender:" destination="BYZ-38-t0r" eventType="touchDragInside" id="vou-lR-1RI"/>
+                                </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="y4d-R6-LIo">
                                 <rect key="frame" x="86" y="84" width="100" height="60"/>
@@ -100,6 +109,9 @@
                                     <constraint firstAttribute="height" constant="61" id="rxh-ue-Yt3"/>
                                 </constraints>
                                 <state key="normal" title="Get"/>
+                                <connections>
+                                    <action selector="clikGetWithSender:" destination="BYZ-38-t0r" eventType="touchUpInside" id="kjQ-mW-FCV"/>
+                                </connections>
                             </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>

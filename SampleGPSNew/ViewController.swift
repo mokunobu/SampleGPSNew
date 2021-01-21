@@ -42,7 +42,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate,MKMapViewDeleg
         //Mapの表示モードを変更できる
         mapView.mapType = MKMapType.hybrid
         
-        //中心の地位を利用者のの現在にする
+        //中心の地位を利用者の現在地にする
         mapView.setCenter(mapView.userLocation.coordinate, animated: true)
         mapView.userTrackingMode = MKUserTrackingMode.follow
         mapView.userTrackingMode = MKUserTrackingMode.follow
@@ -89,10 +89,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate,MKMapViewDeleg
         mapView.addAnnotation(annotation)
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
     @IBAction func clikGet(sender: UIButton) {
         locationManager.startUpdatingLocation()
 
@@ -132,7 +128,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate,MKMapViewDeleg
             if pinImageView == nil{
                 //
                 pinImageView = MKAnnotationView(annotation: annotation, reuseIdentifier: annotationImageViewId)
-                pinImageView?.image = UIImage(named: "playerr.jpg")
+                pinImageView?.image = UIImage(named: "player.png")
                 pinImageView?.canShowCallout = true
             }
             else{
