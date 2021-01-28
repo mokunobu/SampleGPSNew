@@ -9,7 +9,8 @@ import UIKit
 import CoreLocation
 import MapKit
 
-class ViewController: UIViewController, CLLocationManagerDelegate,MKMapViewDelegate {
+
+class ViewController: UIViewController, CLLocationManagerDelegate,MKMapViewDelegate, UIScrollViewDelegate {
     //GPS系の処理を任せてもらうため必要なルール
     @IBOutlet weak var labelLat: UILabel!
     @IBOutlet weak var labelLon: UILabel!
@@ -18,7 +19,35 @@ class ViewController: UIViewController, CLLocationManagerDelegate,MKMapViewDeleg
     @IBOutlet weak var inputLat: UITextField!
     @IBOutlet weak var inputLon: UITextField!
     
+    @IBOutlet weak var scrollView: UIScrollView!
+    
+    @IBOutlet weak var innerView: UIView!
+    @IBOutlet weak var innerView2: UIView!
+    @IBOutlet weak var innerView3: UIView!
+    
+    @IBOutlet weak var pageControll: UIPageControl!
+    
+    let locationNameList = [
+        "日本コンピュータ専門学校",
+        "上新庄駅",
+        "だいどう豊里駅"
+    ]
+    let locationSubNameList = [
+        "学校",
+        "阪急：駅",
+        "OsakaMetoro：駅"
+    ]
+
+    // 学校・上新庄駅・だいどう豊里駅の緯度経度の配列
+    let locationList = [
+        CLLocationCoordinate2DMake(34.742684,135.535068),
+        CLLocationCoordinate2DMake(34.750327,135.533098),
+        CLLocationCoordinate2DMake(34.743739,135.544665)
+    ]
+
     var locationManager: CLLocationManager!
+    // デフォルトのマップ拡大率
+    var defaultSpan = MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,21 +72,52 @@ class ViewController: UIViewController, CLLocationManagerDelegate,MKMapViewDeleg
         mapView.mapType = MKMapType.hybrid
         
         //中心の地位を利用者の現在地にする
-        mapView.setCenter(mapView.userLocation.coordinate, animated: true)
+        //mapView.setCenter(mapView.userLocation.coordinate, animated: true)
+        mapView.setRegion(MKCoordinateRegion(center: mapView.userLocation.coordinate, span: defaultSpan), animated: true)
         mapView.userTrackingMode = MKUserTrackingMode.follow
         mapView.userTrackingMode = MKUserTrackingMode.follow
         //mapView.userTrackingMode = MKUserTrackingMode.FollowWithHeading
         //ピンを全て削除
-        mapView.removeAnnotations(mapView.annotations);
-         // 新しいピンを作成
-        let annotation: MKPointAnnotation = MKPointAnnotation();
-        annotation.coordinate = CLLocationCoordinate2DMake(43.065888,141.354594);
-        annotation.title = "テスト　アノテーション";
-        annotation.subtitle = "サブタイトル";
+        mapView.removeAnnotations(mapView.annotations)
+
         mapView.delegate = self
 
-        //ピンを追加
-        mapView.addAnnotation(annotation);
+        // ピンを追加
+        for index in 0..<locationNameList.count {
+            // 新しいピンを作成
+            let annotation: MKPointAnnotation = MKPointAnnotation()
+            annotation.title = locationNameList[index]
+            annotation.subtitle = locationSubNameList[index]
+            annotation.coordinate = locationList[index]
+            //ピンを追加
+            mapView.addAnnotation(annotation)
+        }
+        
+        innerView.frame.size.width = scrollView.frame.size.width
+        innerView2.frame.size.width = scrollView.frame.size.width
+        innerView3.frame.size.width = scrollView.frame.size.width
+        innerView.frame.size.height = scrollView.frame.size.height
+        innerView2.frame.size.height = scrollView.frame.size.height
+        innerView3.frame.size.height = scrollView.frame.size.height
+        
+        innerView.frame.origin.x = 0
+        innerView2.frame.origin.x = scrollView.frame.size.width
+        innerView3.frame.origin.x = scrollView.frame.size.width * 2
+
+        // scrollViewのサイズを指定（幅は1メニューに表示するViewの幅×ページ数）
+        let contentWidth = innerView.frame.size.width * CGFloat(pageControll.numberOfPages)
+        let contentHeight = innerView.frame.size.height
+        scrollView.contentSize = CGSize(width: contentWidth, height: contentHeight)
+        
+        // scrollViewのデリゲートになる（スクロールした際のイベントをメソッドで受け取れる）
+        scrollView.delegate = self
+        // スクロールを可能にする
+        scrollView.isScrollEnabled = true
+        // ページ単位のスクロールを可能にする（ページの認識は登録されている部品の数、今回は３つのView）
+        scrollView.isPagingEnabled = true
+        // 垂直方向のスクロールインジケータを非表示にする（水平方向のみのスクロール）
+        scrollView.showsVerticalScrollIndicator = false
+
     }
 
     @IBAction func clickSet(sender: UIButton) {
@@ -89,7 +149,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate,MKMapViewDeleg
         mapView.addAnnotation(annotation)
     }
 
-    @IBAction func clikGet(sender: UIButton) {
+    @IBAction func clickGet(sender: UIButton) {
         locationManager.startUpdatingLocation()
 
     }
@@ -144,7 +204,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate,MKMapViewDeleg
         if pinView == nil{
             //無かったら新しくAnnotation用のView(見た目) を　作成する
             pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: annotationViewId)
-            if annotation.subtitle!! == "サブタイトルA"{
+            if annotation.subtitle == "サブタイトルA"{
                 pinView?.pinTintColor = UIColor.red
                 pinView?.animatesDrop = true
             }
@@ -160,5 +220,24 @@ class ViewController: UIViewController, CLLocationManagerDelegate,MKMapViewDeleg
         // 用意した見た目を返して使ってもらう
         return pinView
     }
+    
+    @IBAction func changePage(_ sender: UIPageControl) {
+        // 緩やかにアニメーションして切り替わるようにする
+        UIView.animate(withDuration: 0.3) {
+            self.scrollView.contentOffset.x = CGFloat(sender.currentPage) * self.innerView.frame.size.width
+        }
+        //中心の地位を利用者の現在地にする
+        mapView.setCenter(locationList[sender.currentPage], animated: true)
+
+    }
+    
+    // scrollViewのデリゲートに指定したのでスクロールした際に、このメソッドが反応する
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        // 現在のX座標の位置からpageControllの現在のページ番号を更新しておく
+        pageControll.currentPage = Int(scrollView.contentOffset.x / scrollView.frame.size.width)
+        //中心の地位を利用者の現在地にする
+        mapView.setCenter(locationList[pageControll.currentPage], animated: true)
+    }
+
 }
 
